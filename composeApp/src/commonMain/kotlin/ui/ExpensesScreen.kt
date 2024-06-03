@@ -34,10 +34,11 @@ import data.ExpensesManager
 import getColorsTheme
 import model.Expense
 import moe.tlaster.precompose.PreComposeApp
+import presentation.ExpenseUiState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ExpensesScreen(onExpenseClick: (expense: Expense) -> Unit) {
+fun ExpensesScreen(uiState: ExpenseUiState,onExpenseClick: (expense: Expense) -> Unit) {
     val colors = getColorsTheme()
 
     MaterialTheme {
@@ -48,11 +49,11 @@ fun ExpensesScreen(onExpenseClick: (expense: Expense) -> Unit) {
             ) {
                 stickyHeader {
                     Column(modifier = Modifier.background(colors.background)) {
-                        ExpensesTotalHeader(100.0)
+                        ExpensesTotalHeader(uiState.total)
                         AllExpensesHeader()
                     }
                 }
-                items(ExpensesManager.fakeExpenseList) { expense ->
+                items(uiState.expensesList) { expense ->
                     ExpensesItem(expense = expense, onExpenseClick = onExpenseClick )
                 }
             }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import data.ExpensesManager
 import model.Expense
+import presentation.ExpenseUiState
 import ui.AllExpensesHeader
 import ui.ExpensesItem
 import ui.ExpensesScreen
@@ -32,9 +33,10 @@ fun ExpensesItemPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ExpenseScreenPreview(){
+fun ExpenseScreenPreview() {
     val fakeExpenseList = ExpensesManager.fakeExpenseList
-    ExpensesScreen {
-
-    }
+    ExpensesScreen(
+        uiState = ExpenseUiState(
+            expensesList = fakeExpenseList,
+            total = fakeExpenseList.sumOf { it.amount }), onExpenseClick = {})
 }
