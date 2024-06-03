@@ -1,6 +1,6 @@
-package domain
+package data
 
-import data.ExpensesManager
+import domain.ExpenseRepository
 import model.Expense
 import model.ExpenseCategory
 

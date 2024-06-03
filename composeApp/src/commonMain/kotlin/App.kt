@@ -1,37 +1,116 @@
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.TitleTopBarTypes
 import moe.tlaster.precompose.PreComposeApp
+import moe.tlaster.precompose.navigation.Navigator
+import moe.tlaster.precompose.navigation.path
+import moe.tlaster.precompose.navigation.rememberNavigator
+import navigation.Navigation
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview
 fun App() {
     PreComposeApp {
         val colors = getColorsTheme()
+        val navigator = rememberNavigator()
+        val titleTopBar = getTitleTopAppBar(navigator)
+        val isEditOrAddExpenses = titleTopBar != TitleTopBarTypes.DASHBOARD.value
         AppTheme {
-            Scaffold(modifier = Modifier.fillMaxWidth(),
+            Scaffold(
+                modifier = Modifier.fillMaxWidth(),
                 topBar = {
                     TopAppBar(
                         elevation = 0.dp,
                         title = {
                             Text(
-                                text = "Compose App",
+                                text = titleTopBar,
                                 fontSize = 25.sp,
                                 color = colors.textColor
                             )
-                        }
+                        }, navigationIcon = {
+                            if (isEditOrAddExpenses) {
+                                IconButton(onClick = { navigator.popBackStack() }) {
+                                    Icon(
+                                        modifier = Modifier.padding(start = 16.dp),
+                                        imageVector = Icons.Default.ArrowBack,
+                                        tint = colors.textColor,
+                                        contentDescription = "Back arrow"
+                                    )
+                                }
+                            } else {
+                                IconButton(onClick = {}) {
+                                    Icon(
+                                        modifier = Modifier.padding(start = 16.dp),
+                                        imageVector = Icons.Default.Apps,
+                                        tint = colors.textColor,
+                                        contentDescription = "Dashboard Icon"
+                                    )
+                                }
+                            }
+                        }, backgroundColor = colors.background
                     )
-                }) { }
+                },
+                floatingActionButton = {
+                    if (!isEditOrAddExpenses) {
+                        FloatingActionButton(
+                            modifier = Modifier.padding(8.dp),
+                            onClick = {
+                                navigator.navigate("/addExpenses")
+                            },
+                            shape = RoundedCornerShape(50),
+                            backgroundColor = colors.addIconColor,
+                            contentColor = Color.White
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                tint = Color.White,
+                                contentDescription = "Add Icon"
+                            )
+                        }
+                    }
+                }
+            ) {
+                Navigation(navigator)
+            }
 
 
         }
     }
+}
+
+@Composable
+fun getTitleTopAppBar(navigator: Navigator): String {
+    var titleTopBar = TitleTopBarTypes.DASHBOARD
+
+    val isOnAddExpenses =
+        navigator.currentEntry.collectAsState(null).value?.route?.route.equals("/addExpenses/{id}")
+
+    if (isOnAddExpenses) titleTopBar = TitleTopBarTypes.ADD_EXPENSE
+
+    val isOnEditExpenses =
+        navigator.currentEntry.collectAsState(null).value?.path<Long>("/editExpenses/{id}")
+    isOnEditExpenses?.let { titleTopBar = TitleTopBarTypes.EDIT_EXPENSE }
+
+    return titleTopBar.value
 }

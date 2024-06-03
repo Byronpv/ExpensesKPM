@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import data.ExpensesManager
-import domain.ExpenseRepositoryImpl
+import data.ExpenseRepositoryImpl
 import getColorsTheme
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.NavHost
