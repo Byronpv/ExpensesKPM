@@ -1,10 +1,7 @@
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -27,6 +24,8 @@ import moe.tlaster.precompose.navigation.path
 import moe.tlaster.precompose.navigation.rememberNavigator
 import navigation.Navigation
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import utils.AppTheme
+import utils.getColorsTheme
 
 @Composable
 @Preview
@@ -104,7 +103,7 @@ fun getTitleTopAppBar(navigator: Navigator): String {
     var titleTopBar = TitleTopBarTypes.DASHBOARD
 
     val isOnAddExpenses =
-        navigator.currentEntry.collectAsState(null).value?.route?.route.equals("/addExpenses/{id}")
+        navigator.currentEntry.collectAsState(null).value?.route?.route.equals("/addExpenses/{id}?")
 
     if (isOnAddExpenses) titleTopBar = TitleTopBarTypes.ADD_EXPENSE
 
